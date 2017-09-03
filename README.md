@@ -1,2 +1,2 @@
-# convutacao-evolutiva
-Implementação em ANSI-C de um algoritmo genético.
+# Copuutação Evolutiva
+Implementação em ANSI-C de um _Algoritmo Genético_.
