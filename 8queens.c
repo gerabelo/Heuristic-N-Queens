@@ -176,7 +176,7 @@ void gerar_filhos(int pai) {
                         individuos[populacao_atual].genes[(rand() % GENES)] = (rand() % GENES);
                 }
                 
-                individuos[populacao_atual].aptidao = individuos[c1].aptidao;
+                individuos[populacao_atual].aptidao = 0;
                 populacao_atual++;
         }
 }
