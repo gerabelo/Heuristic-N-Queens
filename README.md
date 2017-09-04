@@ -14,8 +14,8 @@ As estruturas de dados são:
 * individuo - possui um unico cromosso e um resulatdo chamado aptidao, que é calculado pelo algoritmo com base no numero de rainhas posicionadas corretamente;
 * populacao -  um conjunto de cem indivíduos.  
   
-A cada geração um grupo de 10% formado pelos mais aptos é preservado -elitismo-. os demais são substituidos por combinações entre o grupo sobrevivente.  
-O alfabeto dos genes vai de 0 à 7 e representa a linha ocupada pela rainha.
+A cada geração um grupo de 10% formado pelos mais aptos é preservado -elitismo-. os demais são substituidos por combinações entre individuos do grupo sobrevivente.  
+O alfabeto que compoem os genes vai de 0 à 7 e representa a linha ocupada pela rainha naquela coluna/gene.
   
     
 ## A  mutação  
