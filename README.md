@@ -1,4 +1,4 @@
-# Computação Evolutiva
+# Computação Evolutiva :+1
 Implementação em ANSI-C de um _Algoritmo Genético_ capaz de resolver o problema das oito rainhas.  
   
     
@@ -17,6 +17,9 @@ As estruturas de dados são:
     
 ## A Seleção
 A cada geração um pequeno grupo formado pelos mais aptos é preservado -elitismo-. os demais são substituidos por combinações entre individuos do grupo sobrevivente.  
+```
+        elite_da_populacao = round((-1+sqrt(1+4*POPULACAO)/2));
+```
 O alfabeto que compoem os genes vai de 0 à 7 e representa a linha ocupada pela rainha naquela coluna/gene.
   
     
@@ -35,3 +38,5 @@ Alterações aleatorias ocorrerão em alguns dos genes da nova geração.
     
 ## Conclusões  
 Algoritmos Genéticos oferecem soluções heurísticas que podem, ou não, convergir para o resultado desejado.
+  
+![screenshot](https://c1.staticflickr.com/5/4400/36827028836_58d124ffe4_o.png)
