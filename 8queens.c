@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <math.h>
 
-#define POPULACAO       100
+#define POPULACAO       10000
 //#define ELITE_POPULACAO 10
 #define GERACOES        50
 #define GENES           8 
@@ -248,7 +248,7 @@ void imprimir_elite_na_tela() {
 }
 
 void imprimir_individuo_na_tela(int vencedor) {
-        printf("\n\n\tgeracao: %d com população de %d individuos",geracao,POPULACAO);
+        printf("\n\n\tgeracao: %d com uma população formada por %d individuos",geracao,POPULACAO);
         printf("\n\t\tindividuo vencedor: \t%d",vencedor);
         printf("\n\t\tcromossomo vencedor: \t[ ");
         
