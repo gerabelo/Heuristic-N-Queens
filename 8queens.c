@@ -151,7 +151,11 @@ void gerar_filhos(int pai) {
                 }
                 
                 //mutação
-                individuos[populacao_atual].genes[(rand() % 8)] = (rand() % 8);
+                
+                for (int c0 = (rand()%4); c0 < 3; c0++)
+                {
+                        individuos[populacao_atual].genes[(rand() % 8)] = (rand() % 8);
+                }
                 
                 individuos[populacao_atual].aptidao = individuos[c1].aptidao;
                 populacao_atual++;
