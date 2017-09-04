@@ -1,4 +1,4 @@
-# Computação Evolutiva :+1
+# Computação Evolutiva :+1:
 Implementação em ANSI-C de um _Algoritmo Genético_ capaz de resolver o problema das oito rainhas.  
   
     
