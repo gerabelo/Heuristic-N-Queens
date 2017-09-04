@@ -9,7 +9,7 @@
 
 #define POPULACAO       100
 #define ELITE_POPULACAO 10
-#define GERACOES        500
+#define GERACOES        50
 #define GENES           8 
 
 struct cromossomo {
@@ -157,7 +157,7 @@ void gerar_filhos(int pai) {
                 
                 //mutação
                 
-                for (int c0 = (rand()%(GENES/2)); c0 < ((GENES/2)-1); c0++)
+                for (int c0 = (rand()%GENES); c0 < (GENES-1); c0++)
                 {
                         individuos[populacao_atual].genes[(rand() % GENES)] = (rand() % GENES);
                 }
@@ -219,30 +219,22 @@ void ordenar_populacao_por_aptidao (int limite_populacional) {
 }
 
 void imprimir_elite_na_tela() {
-        printf("\ngeracao: %d { ",geracao);
+        printf("\n\tgeração: %d melhor resultado: %d [ ",geracao,individuos[0].aptidao);
+/*
+        printf("\n\tgeracao: %d { ",geracao);
         for (int c0 = 0; c0 < ELITE_POPULACAO; c0++) {                               
                 printf("%d ",individuos[c0].aptidao);
         }
         printf("} - [ ");
-        
+*/        
         for (int c0 = 0; c0 < GENES; c0++) {                               
                 printf("%d ",elite[0].genes[c0]);
         }
-        printf("] - [ ");
-        
-                for (int c0 = 0; c0 < GENES; c0++) {                               
-                printf("%d ",elite[1].genes[c0]);
-        }
-        printf("] - [ ");
-        
-                for (int c0 = 0; c0 < GENES; c0++) {                               
-                printf("%d ",elite[2].genes[c0]);
-        }
-        printf("] ");        
+        printf("]");
 }
 
 void imprimir_individuo_na_tela(int vencedor) {
-        printf("\n\tgeracao: %d com %d individuos",geracao,POPULACAO);
+        printf("\n\n\tgeracao: %d de %d individuos",geracao,POPULACAO);
         printf("\n\t\tindividuo vencedor: \t%d",vencedor);
         printf("\n\t\tcromossomo vencedor: \t[ ");
         
@@ -272,7 +264,7 @@ int main(void) {
                 }
                 ordenar_populacao_por_aptidao(POPULACAO);
                 preservar_elite();
-                //imprimir_elite_na_tela();
+                imprimir_elite_na_tela();
                 gerar_nova_populacao();
                 geracao++;
         }
