@@ -1,8 +1,8 @@
 # Computação Evolutiva :+1:
 Implementação em ANSI-C de um _Algoritmo Genético_ capaz de resolver o problema das oito rainhas.  
   
-    
-## 8 Queens  :crown::crown::crown::crown::crown::crown::crown::crown:
+:crown::crown::crown::crown::crown::crown::crown::crown:  
+## 8 Queens  
 Este problema consiste, como próprio nome sugere, em posicionar oito rainhas em um tableiro de xadrez, sem que elas ameassem umas as outras.  
   
     
