@@ -16,7 +16,7 @@ As estruturas de dados são:
 * populacao -  um conjunto de cem indivíduos.  
     
     
-## A Seleção
+## A Seleção :hocho:  
 A cada geração um pequeno grupo formado pelos mais aptos é preservado -elitismo-. os demais são substituidos por combinações entre individuos do grupo sobrevivente.  
 ```
         elite_da_populacao = round((-1+sqrt(1+4*POPULACAO)/2));
@@ -24,11 +24,11 @@ A cada geração um pequeno grupo formado pelos mais aptos é preservado -elitis
 O alfabeto que compoem os genes vai de 0 à 7 e representa a linha ocupada pela rainha naquela coluna/gene.
   
     
-## A reprodução  
+## A reprodução  :couple:  
 Cada individuo do grupo sobrevivente tem seu cromossomo dividido em duas partes. Novos indivíduos sao criados preservando a primeira metade dos genes de um individuo pai enquanto a segunda é copiada de outro indivíduo mãe. Em seguida ocorre a mutação aleatória.
    
    
-## A  mutação  
+## A  mutação  :hear_no_evil:  
 Alterações aleatorias ocorrerão em alguns dos genes da nova geração.
 ```
         for (int c0 = (rand()%GENES); c0 < (GENES-1); c0++)
