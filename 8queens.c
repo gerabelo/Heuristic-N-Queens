@@ -26,18 +26,18 @@
 */
 
 struct cromossomo {
-        int genes[8];
+        int genes[GENES];
         int aptidao;
 } CROMOSSOMO;
 
 typedef struct cromossomo Cromossomo;
 
+Cromossomo individuos[POPULACAO];
+Cromossomo *elite;
+
 int populacao_atual     = 0;
 int geracao             = 0;
 int elite_da_populacao  = 0;
-
-Cromossomo individuos[POPULACAO];
-Cromossomo *elite;
 
 int total_de_rainhas_corretamente_posicionadas (int candidato) {       
         /*
