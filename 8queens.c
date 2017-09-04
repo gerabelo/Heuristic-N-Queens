@@ -6,11 +6,24 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 
 #define POPULACAO       100
-#define ELITE_POPULACAO 10
+//#define ELITE_POPULACAO 10
 #define GERACOES        50
 #define GENES           8 
+
+/*
+        Arranjo = n!/(n-p)!
+        
+                populacao*(elite-2)! = elite!
+                
+                populacao = elite*(elite-1)
+                elite^2 - elite - populacao = 0
+                
+                elite = (-1+sqrt(1+4*populacao))/2
+                
+*/
 
 struct cromossomo {
         int genes[8];
@@ -19,11 +32,12 @@ struct cromossomo {
 
 typedef struct cromossomo Cromossomo;
 
-Cromossomo individuos[POPULACAO];
-Cromossomo elite[ELITE_POPULACAO];
-
 int populacao_atual     = 0;
 int geracao             = 0;
+int elite_da_populacao  = 0;
+
+Cromossomo individuos[POPULACAO];
+Cromossomo *elite;
 
 int total_de_rainhas_corretamente_posicionadas (int candidato) {       
         /*
@@ -147,9 +161,9 @@ void gerar_filhos(int pai) {
                 individuos[populacao_atual].genes[c0] = individuos[pai].genes[c0];
         }
         
-        for (int c1 = 0; c1 < ELITE_POPULACAO; c1++) {
+        for (int c1 = 0; c1 < elite_da_populacao; c1++) {
 
-                for (int c2 = 4; c2 < GENES; c2++) {
+                for (int c2 = GENES/2; c2 < GENES; c2++) {
                         if (c1 != pai) {
                                 individuos[populacao_atual].genes[c2] = individuos[c1].genes[c2];
                         }
@@ -168,20 +182,20 @@ void gerar_filhos(int pai) {
 }
 
 void gerar_nova_populacao () {
-        populacao_atual = ELITE_POPULACAO;
-        for (int c0 = 0; c0 < ELITE_POPULACAO; c0++) {
+        populacao_atual = elite_da_populacao;
+        for (int c0 = 0; c0 < elite_da_populacao; c0++) {
                 individuos[c0].aptidao = elite[c0].aptidao;
                 for (int c1 = 0; c1 < GENES; c1++) {
                         individuos[c0].genes[c1] = elite[c0].genes[c1];
                 }
         }        
-        for (int individuo = 0; individuo < ELITE_POPULACAO; individuo++) {
+        for (int individuo = 0; individuo < elite_da_populacao; individuo++) {
                 gerar_filhos(individuo);
         }
 }
 
 void preservar_elite() {
-        for (int c0 = 0; c0 < ELITE_POPULACAO; c0++) {
+        for (int c0 = 0; c0 < elite_da_populacao; c0++) {
                 for (int c1 = 0; c1 < GENES; c1++) {
                         elite[c0].genes[c1] = individuos[c0].genes[c1];
                 }
@@ -219,10 +233,10 @@ void ordenar_populacao_por_aptidao (int limite_populacional) {
 }
 
 void imprimir_elite_na_tela() {
-        printf("\n\tgeração: %d melhor resultado: %d [ ",geracao,individuos[0].aptidao);
+        printf("\n\tgeração: %d; melhor resultado: %d [ ",geracao,individuos[0].aptidao);
 /*
         printf("\n\tgeracao: %d { ",geracao);
-        for (int c0 = 0; c0 < ELITE_POPULACAO; c0++) {                               
+        for (int c0 = 0; c0 < elite_da_populacao; c0++) {                               
                 printf("%d ",individuos[c0].aptidao);
         }
         printf("} - [ ");
@@ -234,7 +248,7 @@ void imprimir_elite_na_tela() {
 }
 
 void imprimir_individuo_na_tela(int vencedor) {
-        printf("\n\n\tgeracao: %d de %d individuos",geracao,POPULACAO);
+        printf("\n\n\tgeracao: %d com população de %d individuos",geracao,POPULACAO);
         printf("\n\t\tindividuo vencedor: \t%d",vencedor);
         printf("\n\t\tcromossomo vencedor: \t[ ");
         
@@ -253,6 +267,9 @@ int main(void) {
         printf("\n");
         
         gerar_populacao_inical(POPULACAO);  
+        elite_da_populacao = round((-1+sqrt(1+4*POPULACAO)/2));
+        printf("\t%d individuos no grupo Elite",elite_da_populacao);
+        elite = malloc(elite_da_populacao*sizeof(Cromossomo));
         
         while (geracao < GERACOES) {
                 for (int individuo = 0; individuo < POPULACAO; individuo++) {
