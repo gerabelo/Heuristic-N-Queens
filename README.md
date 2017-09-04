@@ -16,7 +16,7 @@ As estruturas de dados são:
     
     
 ## A Seleção
-A cada geração um grupo de 10% formado pelos mais aptos é preservado -elitismo-. os demais são substituidos por combinações entre individuos do grupo sobrevivente.  
+A cada geração um pequeno grupo formado pelos mais aptos é preservado -elitismo-. os demais são substituidos por combinações entre individuos do grupo sobrevivente.  
 O alfabeto que compoem os genes vai de 0 à 7 e representa a linha ocupada pela rainha naquela coluna/gene.
   
     
@@ -25,8 +25,13 @@ Cada individuo do grupo sobrevivente tem seu cromossomo dividido em duas partes.
    
    
 ## A  mutação  
-Os 90% -novos indivíduos- terao entre um e tres genes substituidos aleatoriamentes. 
-    
+Alterações aleatorias ocorrerão em alguns dos genes da nova geração.
+```
+                for (int c0 = (rand()%GENES); c0 < (GENES-1); c0++)
+                {
+                        individuos[populacao_atual].genes[(rand() % GENES)] = (rand() % GENES);
+                }
+```
     
 ## Conclusões  
 Algoritmos Genéticos oferecem soluções heurísticas que podem, ou não, convergir para o resultado desejado.
