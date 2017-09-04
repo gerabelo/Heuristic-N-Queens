@@ -8,9 +8,9 @@ Este problema consiste, como próprio nome sugere, em posicionar oito rainhas em
   
     
 ## Como o algoritmo funciona?  
-O algorimo cria algumas estruturas simples de dados e, com elas, tenta simular comportametos biológicos como evolução/mutação, seleção e reprodução.  
+O algorimo cria algumas estruturas simples de dados e, com elas, tenta simular comportametos biológicos/naturais como o da evolução-mutação, o da seleção natural e o da reprodução.  
   
-As estruturas de dados são:  
+As estruturas:  
 * cromossomo - composto por um conjunto de oito genes (cada um equivale a uma coluna do tabuleiro);
 * individuo - possui um unico cromosso e um resulatdo chamado aptidao, que é calculado pelo algoritmo com base no numero de rainhas posicionadas corretamente;
 * populacao -  um conjunto de cem indivíduos.  
