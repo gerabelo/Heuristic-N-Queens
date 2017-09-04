@@ -27,10 +27,10 @@ Cada individuo do grupo sobrevivente tem seu cromossomo dividido em duas partes.
 ## A  mutação  
 Alterações aleatorias ocorrerão em alguns dos genes da nova geração.
 ```
-                for (int c0 = (rand()%GENES); c0 < (GENES-1); c0++)
-                {
-                        individuos[populacao_atual].genes[(rand() % GENES)] = (rand() % GENES);
-                }
+        for (int c0 = (rand()%GENES); c0 < (GENES-1); c0++)
+        {
+                individuos[populacao_atual].genes[(rand() % GENES)] = (rand() % GENES);
+        }
 ```
     
 ## Conclusões  
