@@ -14,15 +14,17 @@
 #define GENES           8 
 
 /*
-        Arranjo = n!/(n-p)!
-        
-                populacao*(elite-2)! = elite!
+                Calculando o tamanho do grupo Elite com base no tamanho da população.
+
+                Arranjo = n!/(n-p)!
+                populacao = elite!/(elite-p)!
                 
+                p = 2   os novos individuos serão formados por arranjo entre pares.
+                
+                populacao*(elite-2)! = elite!                
                 populacao = elite*(elite-1)
                 elite^2 - elite - populacao = 0
-                
-                elite = (-1+sqrt(1+4*populacao))/2
-                
+                elite = (-1+sqrt(1+4*populacao))/2                
 */
 
 struct cromossomo {
@@ -258,7 +260,6 @@ void imprimir_individuo_na_tela(int vencedor) {
         
         printf("]\n\n");        
 }
-
 
 int main(void) {  
 
