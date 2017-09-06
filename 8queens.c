@@ -7,10 +7,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <time.h>
 
-#define POPULACAO       10000
+#define POPULACAO       100
 //#define ELITE_POPULACAO 10
-#define GERACOES        50
+#define GERACOES        500
 #define GENES           8 
 
 /*
@@ -21,7 +22,9 @@
                 
                 p = 2   os novos individuos serão formados por arranjo entre pares.
                 
-                populacao*(elite-2)! = elite!                
+                populacao*(elite-2)! = elite!
+                populacao*(elite-2)! = elite*(elite-1)!
+                populacao*(elite-2)! = elite*(elite-1)*(elite-2)!                
                 populacao = elite*(elite-1)
                 elite^2 - elite - populacao = 0
                 elite = (-1+sqrt(1+4*populacao))/2                
@@ -157,7 +160,7 @@ void gerar_populacao_inical (int limite_populacional) {
         }
 }
 
-void gerar_filhos(int pai) {
+void reproducao(int pai) {
         
         for (int c0 = 0; c0 < (GENES/2); c0++) {
                 individuos[populacao_atual].genes[c0] = individuos[pai].genes[c0];
@@ -192,7 +195,7 @@ void gerar_nova_populacao () {
                 }
         }        
         for (int individuo = 0; individuo < elite_da_populacao; individuo++) {
-                gerar_filhos(individuo);
+                reproducao(individuo);
         }
 }
 
@@ -234,42 +237,44 @@ void ordenar_populacao_por_aptidao (int limite_populacional) {
         }
 }
 
-void imprimir_elite_na_tela() {
+void imprimir_melhor_resultado_na_tela() {
         printf("\n\tgeração: %d; melhor resultado: %d [ ",geracao,individuos[0].aptidao);
-/*
-        printf("\n\tgeracao: %d { ",geracao);
-        for (int c0 = 0; c0 < elite_da_populacao; c0++) {                               
-                printf("%d ",individuos[c0].aptidao);
-        }
-        printf("} - [ ");
-*/        
+
         for (int c0 = 0; c0 < GENES; c0++) {                               
-                printf("%d ",elite[0].genes[c0]);
+                printf("%c%d ",97+c0,elite[0].genes[c0]+1);
         }
         printf("]");
 }
 
 void imprimir_individuo_na_tela(int vencedor) {
-        printf("\n\n\tgeracao: %d com uma população formada por %d individuos",geracao,POPULACAO);
-        printf("\n\t\tindividuo vencedor: \t%d",vencedor);
-        printf("\n\t\tcromossomo vencedor: \t[ ");
+        printf("\n\tgeração: %d; melhor resultado: %d [ ",geracao,individuos[vencedor].aptidao);
         
         for (int c0 = 0; c0 < GENES; c0++) {
-                printf("%d ",individuos[vencedor].genes[c0]);
+                printf("%c%d ",97+c0,individuos[vencedor].genes[c0]+1);
         }
-        
+
         printf("]\n\n");        
 }
 
-int main(void) {  
 
+int main(int argc, char **argv) {  
+
+        double start_t, end_t, total_t;
+        start_t = clock();        
+        
+        
+//        FILE *cpuinfo = fopen("/proc/cpuinfo", "rb");
+//        char *arg = 0;
+//        size_t size = 0;  
+
+        
         geracao = 0;
         
         printf("\n");
         
         gerar_populacao_inical(POPULACAO);  
         elite_da_populacao = round((-1+sqrt(1+4*POPULACAO)/2));
-        printf("\t%d individuos no grupo Elite",elite_da_populacao);
+        printf("\tPreservados %d de %d individuos -Elitismo-",elite_da_populacao,POPULACAO);
         elite = malloc(elite_da_populacao*sizeof(Cromossomo));
         
         while (geracao < GERACOES) {
@@ -277,15 +282,33 @@ int main(void) {
                         individuos[individuo].aptidao = calcula_aptidao(individuo);
                         if (individuos[individuo].aptidao == 8) {
                                 imprimir_individuo_na_tela(individuo);
-                                exit(1);
+                                end_t = clock();                                
+                                total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;
+                                printf("\tTempo total: %f segundos\n", total_t  );
+                                printf("\n");
+
+                                return(0);
                         }
                 }
                 ordenar_populacao_por_aptidao(POPULACAO);
                 preservar_elite();
-                imprimir_elite_na_tela();
+                imprimir_melhor_resultado_na_tela();
                 gerar_nova_populacao();
                 geracao++;
         }
                         
+        end_t = clock();        
+        total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;
+        printf("Tempo total: %f segundos\n", total_t  );
         printf("\n");
+
+
+//        while(getdelim(&arg, &size, 0, cpuinfo) != -1)
+//        {
+//                puts(arg);
+//        }
+//        free(arg);
+//        fclose(cpuinfo);
+        
+        return(0);
 }
