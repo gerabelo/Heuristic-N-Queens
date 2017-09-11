@@ -35,7 +35,8 @@
 #include <time.h>
 #include <unistd.h> //sleep
 
-#define POPULACAO       800
+#define POPULACAO               800
+#define TAXA_MUTACAO_ELITE      0.5
 
 struct cromossomo {
    int *genes;
@@ -181,25 +182,25 @@ void gerar_populacao_inical () {
 }
 
 void reproducao(int pai) {      
-   for (contador_populacao = 0; contador_populacao < elite_da_populacao; contador_populacao++) {
-      for (contador_genes = 0; contador_genes < (genes/2); contador_genes++) {
+   for (int contador_populacao = 0; contador_populacao < elite_da_populacao; contador_populacao++) {
+      for (int contador_genes = 0; contador_genes < (genes/2); contador_genes++) {
          individuos[populacao_atual].genes[contador_genes] = individuos[pai].genes[contador_genes];
       }      
 
-      for (contador_genes = genes/2; contador_genes < genes; contador_genes++) {
+      for (int contador_genes = genes/2; contador_genes < genes; contador_genes++) {
          if (contador_populacao != pai) {
             individuos[populacao_atual].genes[contador_genes] = individuos[contador_populacao].genes[contador_genes];
          }
       }
 
-      individuos[populacao_atual].genes[(rand()%genes)] = (rand()%genes);      
+      individuos[populacao_atual].genes[(rand()%genes)] = (rand()%genes);
       individuos[populacao_atual].aptidao = 0;
       populacao_atual++;
    }   
 }
 
 void mutacao_global() {
-    for (contador_genes = (rand()%genes); contador_genes < (genes-1); contador_genes++)
+    for (int contador_genes = (rand()%genes); contador_genes < (genes-1); contador_genes++)
     {
        individuos[(rand() % POPULACAO)].genes[rand()%genes] = (rand()%genes);
        contador_mutacao++;      
@@ -207,7 +208,7 @@ void mutacao_global() {
 }
 
 void mutacao_local_elite() {
-    for (contador_genes = 0; contador_genes < (rand()%genes)/10; contador_genes++)
+    for (int contador_genes = 0; contador_genes < TAXA_MUTACAO_ELITE*(rand()%genes); contador_genes++)
     {
        individuos[((rand() % elite_da_populacao))].genes[rand()%genes] = (rand()%genes);
        contador_mutacao++;      
@@ -215,9 +216,9 @@ void mutacao_local_elite() {
 }
 
 void mutacao_local_plebe() {
-   for (contador_genes = (rand()%genes); contador_genes < (genes-1); contador_genes++)
+   for (int contador_genes = (rand()%genes); contador_genes < (genes-1); contador_genes++)
    {
-      for (contador_populacao = 0; contador_populacao < (rand()%elite_da_populacao); contador_populacao++)
+      for (int contador_populacao = 0; contador_populacao < (rand()%elite_da_populacao); contador_populacao++)
       {
          individuos[(rand() % (POPULACAO-elite_da_populacao))+elite_da_populacao].genes[rand()%genes] = (rand()%genes);
          contador_mutacao++;      
@@ -229,21 +230,21 @@ void gerar_nova_populacao () {
    contador_mutacao = 0;
    populacao_atual = elite_da_populacao;
 
-   for (contador_populacao = 0; contador_populacao < elite_da_populacao; contador_populacao++) {
+   for (int contador_populacao = 0; contador_populacao < elite_da_populacao; contador_populacao++) {
       individuos[contador_populacao].aptidao = elite[contador_populacao].aptidao;
-      for (contador_genes = 0; contador_genes < genes; contador_genes++) {
+      for (int contador_genes = 0; contador_genes < genes; contador_genes++) {
          individuos[contador_populacao].genes[contador_genes] = elite[contador_populacao].genes[contador_genes];
       }
    }   
 
-   for (contador_populacao = 0; contador_populacao < elite_da_populacao; contador_populacao++) {
+   for (int contador_populacao = 0; contador_populacao < elite_da_populacao; contador_populacao++) {
       reproducao(contador_populacao);
    }
 }
 
 void preservar_elite() {
-   for (contador_populacao = 0; contador_populacao < elite_da_populacao; contador_populacao++) {
-      for (contador_genes = 0; contador_genes < genes; contador_genes++) {
+   for (int contador_populacao = 0; contador_populacao < elite_da_populacao; contador_populacao++) {
+      for (int contador_genes = 0; contador_genes < genes; contador_genes++) {
          elite[contador_populacao].genes[contador_genes] = individuos[contador_populacao].genes[contador_genes];
       }
       elite[contador_populacao].aptidao = individuos[contador_populacao].aptidao;
@@ -261,9 +262,9 @@ void ordenar_populacao_por_aptidao (int limite_populacional) {
    aptidao = 0;
    houve_troca = 0;   
 
-   for (contador_populacao = 0; contador_populacao < limite_populacional-1; contador_populacao++) {
+   for (int contador_populacao = 0; contador_populacao < limite_populacional-1; contador_populacao++) {
       if (individuos[contador_populacao].aptidao < individuos[contador_populacao+1].aptidao) {
-         for (contador_genes = 0; contador_genes < genes; contador_genes++) {
+         for (int contador_genes = 0; contador_genes < genes; contador_genes++) {
             sujeito.genes[contador_genes] = individuos[contador_populacao+1].genes[contador_genes];
             individuos[contador_populacao+1].genes[contador_genes] = individuos[contador_populacao].genes[contador_genes];
             individuos[contador_populacao].genes[contador_genes] = sujeito.genes[contador_genes];
@@ -283,7 +284,14 @@ void ordenar_populacao_por_aptidao (int limite_populacional) {
 
 void imprimir_melhor_resultado_na_tela() {
    //executar a função de ordenação
-   printf("\n%d:%d",geracao,individuos[0].aptidao);
+//   printf("\n%d:%d",geracao,individuos[0].aptidao);
+        printf("\n\tgeração: %d; melhor resultado: %d [ ",geracao,individuos[0].aptidao);
+
+        for (contador_genes = 0; contador_genes < genes; contador_genes++) {                               
+                printf("%d ",elite[0].genes[contador_genes]+1);
+        }
+        printf("]");
+
 }
 
 void imprimir_individuo_na_tela(int especime) {
@@ -371,7 +379,7 @@ int main(int argc, char **argv) {
 
       ordenar_populacao_por_aptidao(POPULACAO);
       preservar_elite();
-      //imprimir_melhor_resultado_na_tela();
+      imprimir_melhor_resultado_na_tela();
       gerar_nova_populacao();
       mutacao_local_elite();
       mutacao_local_plebe();    
