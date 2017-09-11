@@ -316,14 +316,21 @@ void imprimir_individuo_em_arquivo(int genes,int especime, float time) {
       exit(1);
    }
 
+/*
    fprintf(arquivo,"\\*\n\tAlgoritmo N-queens escrito por Geraldo Rabelo <geraldo.rabelo@gmail.com> em Setembro de 2017.\n*\\\n\n");   
    fprintf(arquivo,"número de raínhas: %d\nsolução: [",individuos[especime].aptidao);
 
    for (contador_genes = 0; contador_genes < genes-1; contador_genes++) {
       fprintf(arquivo,"%d,",individuos[especime].genes[contador_genes]+1);   
    }       
-
    fprintf(arquivo,"%d]\nresolvido em %d gerações (%f segundos)",individuos[especime].genes[contador_genes]+1,geracao, time);
+   
+*/
+   for (contador_genes = 0; contador_genes < genes; contador_genes++) {
+      fprintf(arquivo,"%d;",individuos[especime].genes[contador_genes]+1);   
+   }       
+
+
    fclose(arquivo);
 }
 
@@ -360,7 +367,7 @@ int main(int argc, char **argv) {
    while (1) {
       for (int especime = 0; especime < POPULACAO; especime++) {
          individuos[especime].aptidao = total_de_rainhas_corretamente_posicionadas(especime);
-         //sleep(0.5);
+         sleep(0.5);
 
          if (individuos[especime].aptidao == genes) {
             imprimir_individuo_na_tela(especime);
