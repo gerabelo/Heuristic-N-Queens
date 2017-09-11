@@ -287,7 +287,7 @@ void imprimir_melhor_resultado_na_tela() {
 }
 
 void imprimir_individuo_na_tela(int especime) {
-   printf("\n geração: %d; solução: %d [ ",geracao,individuos[individuo].aptidao);
+   printf("\n geração: %d; solução: %d [ ",geracao,individuos[especime].aptidao);
 
    for (contador_populacao = 0; contador_populacao < genes; contador_populacao++) {
       printf("%d ",individuos[especime].genes[contador_populacao]+1);   
@@ -309,13 +309,13 @@ void imprimir_individuo_em_arquivo(int genes,int especime, float time) {
    }
 
    fprintf(arquivo,"\\*\n\tAlgoritmo N-queens escrito por Geraldo Rabelo <geraldo.rabelo@gmail.com> em Setembro de 2017.\n*\\\n\n");   
-   fprintf(arquivo,"número de raínhas: %d\nsolução: [",genes);
+   fprintf(arquivo,"número de raínhas: %d\nsolução: [",individuos[especime].aptidao);
 
-   for (contador_populacao = 0; contador_populacao < genes-1; contador_populacao++) {
-      fprintf(arquivo,"%d,",individuos[especime].genes[contador_populacao]+1);   
+   for (contador_genes = 0; contador_genes < genes-1; contador_genes++) {
+      fprintf(arquivo,"%d,",individuos[especime].genes[contador_genes]+1);   
    }       
 
-   fprintf(arquivo,"%d]\nresolvido em %d gerações (%f segundos)",individuos[especime].genes[contador_populacao+1]+1,geracao, time);
+   fprintf(arquivo,"%d]\nresolvido em %d gerações (%f segundos)",individuos[especime].genes[contador_genes]+1,geracao, time);
    fclose(arquivo);
 }
 
@@ -352,7 +352,7 @@ int main(int argc, char **argv) {
    while (1) {
       for (int especime = 0; especime < POPULACAO; especime++) {
          individuos[especime].aptidao = total_de_rainhas_corretamente_posicionadas(especime);
-         sleep(0.5);
+         //sleep(0.5);
 
          if (individuos[especime].aptidao == genes) {
             imprimir_individuo_na_tela(especime);
@@ -365,13 +365,13 @@ int main(int argc, char **argv) {
             dimensionar_populacao();
             gerar_populacao_inical(POPULACAO);
             geracao = 0;
-            sleep(0.5);
+            //sleep(0.5);
          }
       }
 
       ordenar_populacao_por_aptidao(POPULACAO);
       preservar_elite();
-      imprimir_melhor_resultado_na_tela();
+      //imprimir_melhor_resultado_na_tela();
       gerar_nova_populacao();
       mutacao_local_elite();
       mutacao_local_plebe();    
