@@ -1,0 +1,6 @@
+\*
+	Algoritmo N-queens escrito por Geraldo Rabelo <geraldo.rabelo@gmail.com> em Setembro de 2017.
+*\
+genes: 10
+solução: [3,8,6,9,1,10,5,7,2,50]
+tempo: 0.100773 segundos

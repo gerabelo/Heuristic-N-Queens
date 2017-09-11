@@ -1,0 +1,7 @@
+genes: 54
+solução: [19,9,23,36,50,16,20,31,45,27,14,39,51,35,21,2,29,40,10,53,17,1,47,6,18,7,42,4,33,41,11,46,32,22,13,44,8,25,28,34,38,26,52,3,12,15,49,5,54,48,43,24,30,226]
+tempo: 70.560539 segundos
+\*
+	Algoritmo N-queens escrito por Geraldo Rabelo <geraldo.rabelo@gmail.com> em Setembro de 2017.
+*\
+
