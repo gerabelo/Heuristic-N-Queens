@@ -1,5 +1,5 @@
 /*
-   Um sistema evolutivo que busca solucao para o Problema das Oito Rainhas
+   Um sistema evolutivo que busca solucao para o Problema das N Rainhas
    escrito por Geraldo Rabelo <geraldo.rabelo@gmail.com>
    setembro 2017
 */
@@ -37,7 +37,7 @@ Cromossomo *elite;
 int populacao_atual                             = 0;
 int geracao                                     = 0;
 int elite_da_populacao                          = 0;
-int genes                                       = 1000;
+int genes                                       = 8;
 int linha                                       = 0;
 int numero_de_rainhas_posicionadas_corretamente = 0;
 int dejavu_colisao                              = 0;
