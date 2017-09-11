@@ -10,7 +10,7 @@
         
 
       O que faz?
-        Roda indefinidamente começando em N igual a 8 e vai incrementando. Cria um arquivo para cada soluçao encontrada.
+        Roda indefinidamente começando em N igual a 8 e vai incrementando. Cria um arquivo txt para cada soluçao encontrada.
       
 
       Calculando o tamanho do grupo Elite com base no tamanho da população.
