@@ -1,6 +1,1 @@
-\*
-	Algoritmo N-queens escrito por Geraldo Rabelo <geraldo.rabelo@gmail.com> em Setembro de 2017.
-*\
-genes: 22
-solução: [18,2,5,12,8,16,14,20,6,21,15,11,1,19,10,22,3,9,17,4,13,98]
-tempo: 9.103756 segundos
+6;14;20;7;12;22;18;21;15;11;2;8;1;16;19;3;9;4;13;17;10;5;
