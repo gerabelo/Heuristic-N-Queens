@@ -1,314 +1,367 @@
 /*
-        Um sistema evolutivo que busca solucao para o Problema das Oito Rainhas
-        escrito por Geraldo Rabelo <geraldo.rabelo@gmail.com>
-        setembro 2017
+   Um sistema evolutivo que busca solucao para o Problema das Oito Rainhas
+   escrito por Geraldo Rabelo <geraldo.rabelo@gmail.com>
+   setembro 2017
 */
-
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <math.h>
 #include <time.h>
-
-#define POPULACAO       100
-//#define ELITE_POPULACAO 10
-#define GERACOES        500
-#define GENES           8 
-
+#include <unistd.h> //sleep
+#define POPULACAO       800
 /*
-                Calculando o tamanho do grupo Elite com base no tamanho da população.
+      Calculando o tamanho do grupo Elite com base no tamanho da população.
 
-                Arranjo = n!/(n-p)!
-                populacao = elite!/(elite-p)!
-                
-                p = 2   os novos individuos serão formados por arranjo entre pares.
-                
-                populacao*(elite-2)! = elite!
-                populacao*(elite-2)! = elite*(elite-1)!
-                populacao*(elite-2)! = elite*(elite-1)*(elite-2)!                
-                populacao = elite*(elite-1)
-                elite^2 - elite - populacao = 0
-                elite = (-1+sqrt(1+4*populacao))/2                
+      Arranjo = n!/(n-p)!
+      populacao = elite!/(elite-p)!
+      
+      p = 2   os novos individuos serão formados por arranjo entre pares.
+      
+      populacao*(elite-2)! = elite!
+      populacao*(elite-2)! = elite*(elite-1)!
+      populacao*(elite-2)! = elite*(elite-1)*(elite-2)!      
+      populacao = elite*(elite-1)
+      elite^2 - elite - populacao = 0
+      elite = (-1+sqrt(1+4*populacao))/2      
 */
-
 struct cromossomo {
-        int genes[GENES];
-        int aptidao;
+   int *genes;
+   int aptidao;
 } CROMOSSOMO;
-
 typedef struct cromossomo Cromossomo;
 
 Cromossomo individuos[POPULACAO];
 Cromossomo *elite;
 
-int populacao_atual     = 0;
-int geracao             = 0;
-int elite_da_populacao  = 0;
+int populacao_atual                             = 0;
+int geracao                                     = 0;
+int elite_da_populacao                          = 0;
+int genes                                       = 1000;
+int linha                                       = 0;
+int numero_de_rainhas_posicionadas_corretamente = 0;
+int dejavu_colisao                              = 0;
+int colisao_flag                                = 0;      
+int coluna                                      = 0;
+int individuo                                   = 0;
+
+int contador_vetor_colisoes                     = 0;
+int contador_mutacao                            = 0;
+int contador                                    = 0;
+int contador_coluna                             = 0;   
+int contador_posicao                            = 0;
+int contador_populacao                          = 0; 
+int contador_genes                              = 0;
 
 int total_de_rainhas_corretamente_posicionadas (int candidato) {       
-        /*
-                Esta função trata das Restrições a cerca do posicionamento das Queens
-        */
-        int linha                                               = 0;
-        int numero_de_rainhas_posicionadas_corretamente         = 0;
-        int vetor_colisoes[GENES]                               = {-1,-2,-3,-4,-5,-6,-7,-8};
-        int contador_vetor_colisoes                             = 0;
-        int dejavu_colisao                                      = 0;
-        int colisao_flag                                        = 0;      
-        
-        
-        for (int coluna = 0; coluna < GENES; coluna++) {
-                
-                linha = individuos[candidato].genes[coluna];
-                
-                colisao_flag = 0;
-                
-                        for (int c0 = coluna+1; c0 < GENES; c0++) {
-                
-                                
-                        
-                                for (int c1 = 0; c1 < 3; c1++) {
-                                        // Três é o número máximo de linhas bloqueadas em cada coluna adjacente a uma já ocupada
-                                
-                                        if (c1 == 0 && individuos[candidato].genes[c0] == linha) {                                        
-                                                dejavu_colisao = 0;
-                                                for (int c2 = 0; c2 < GENES; c2++) {
-                                                        if (vetor_colisoes[c2] == c0) { 
-                                                                dejavu_colisao = 1; 
-                                                        }
-                                                }
-                                                if (dejavu_colisao == 0) {
-                                                        
-                                                        vetor_colisoes[contador_vetor_colisoes] = c0;
-                                                        contador_vetor_colisoes++;
-                                                }
-                                                colisao_flag = 1;
+   /*
+      Esta função trata das Restrições a cerca do posicionamento das Queens
+      verifica linha e diagonais
+   */
+   linha                                        = 0;
+   numero_de_rainhas_posicionadas_corretamente  = 0;
+   int *vetor_colisoes                          = malloc(genes*sizeof(int));
+   contador_vetor_colisoes                      = 0;
+   dejavu_colisao                               = 0;
+   colisao_flag                                 = 0;
 
-                                        } else if ((c1 == 1) && (individuos[candidato].genes[c0] == linha+c0-coluna) && (linha+c0-coluna < 8)) 
-                                        { 
+   for (contador = genes-1; contador >= 0; contador--) {
+      vetor_colisoes[contador] = 1-(contador+2);
+   }   
 
-                                                dejavu_colisao = 0;
-                                                for (int c2 = 0; c2 < GENES; c2++)
-                                                {
-                                                        if (vetor_colisoes[c2] == c0)
-                                                        { 
-                                                                dejavu_colisao = 1; 
-                                                        }
-                                                }
-                                                if (dejavu_colisao == 0)
-                                                {
-                                                        vetor_colisoes[contador_vetor_colisoes] = c0;
-                                                        contador_vetor_colisoes++;
-                                                }
-                                                colisao_flag = 1;
+   for (coluna = 0; coluna < genes; coluna++) {      
+      linha = individuos[candidato].genes[coluna];
+      colisao_flag = 0;  
+      for (contador_coluna = coluna+1; contador_coluna < genes; contador_coluna++) {    
+        for (contador_posicao = 0; contador_posicao < 3; contador_posicao++) {
+       // Três é o número máximo de linhas bloqueadas em cada coluna adjacente a uma já ocupada
+           if (contador_posicao == 0 && individuos[candidato].genes[contador_coluna] == linha) {     
+              dejavu_colisao = 0;
+              for (contador_genes = 0; contador_genes < genes; contador_genes++) {
+                 if (vetor_colisoes[contador_genes] == contador_coluna) { dejavu_colisao = 1; }
+              }
 
-                                        } else if (c1 == 2 && (individuos[candidato].genes[c0] == linha-c0+coluna) && (linha-c0+coluna > -1)) 
-                                        {
+              if (dejavu_colisao == 0) {
+                 vetor_colisoes[contador_vetor_colisoes] = contador_coluna;
+                 contador_vetor_colisoes++;
+              }
+              colisao_flag = 1;
+           } else if ((contador_posicao == 1) && (individuos[candidato].genes[contador_coluna] == linha+contador_coluna-coluna) && (linha+contador_coluna-coluna < genes)) 
+           { 
+              dejavu_colisao = 0;
+              for (contador_genes = 0; contador_genes < genes; contador_genes++)
+              {
+                 if (vetor_colisoes[contador_genes] == contador_coluna)
+                 { 
+                    dejavu_colisao = 1; 
+                 }
+              }
 
-                                                dejavu_colisao = 0;
-                                                for (int c2 = 0; c2 < GENES; c2++)
-                                                {
-                                                        if (vetor_colisoes[c2] == c0)
-                                                        {
-                                                                dejavu_colisao = 1; 
-                                                        }
-                                                }
-                                                if (dejavu_colisao == 0)
-                                                {
-                                                        vetor_colisoes[contador_vetor_colisoes] = c0;
-                                                        contador_vetor_colisoes++;
-                                                }
-                                                colisao_flag = 1;
-                                        }
-                                }
-                        }
+              if (dejavu_colisao == 0)
+              {
+                 vetor_colisoes[contador_vetor_colisoes] = contador_coluna;
+                 contador_vetor_colisoes++;
+              }
+              colisao_flag = 1;
+           } else if (contador_posicao == 2 && (individuos[candidato].genes[contador_coluna] == linha-contador_coluna+coluna) && (linha-contador_coluna+coluna > -1)) 
+           {
+              dejavu_colisao = 0;
 
-                if (colisao_flag == 1)
-                {
-                        dejavu_colisao = 0;
-                        for (int c2 = 0; c2 < GENES; c2++) 
-                        {
-                                if (vetor_colisoes[c2] == coluna) 
-                                { 
-                                        dejavu_colisao = 1; 
-                                }
-                        }
-                        if (dejavu_colisao == 0) 
-                        {
-                                vetor_colisoes[contador_vetor_colisoes] = coluna;
-                                contador_vetor_colisoes++;
-                        }                        
-                }
-        }
-        
-        for (int c2 = 0; c2 < GENES; c2++) 
-        {
-                if (vetor_colisoes[c2] < 0)
-                { 
-                        numero_de_rainhas_posicionadas_corretamente++; 
-                }
-        }                        
-                        
-        return numero_de_rainhas_posicionadas_corretamente;
+              for (contador_genes = 0; contador_genes < genes; contador_genes++)
+              {
+                 if (vetor_colisoes[contador_genes] == contador_coluna)
+                 {
+                    dejavu_colisao = 1; 
+                 }
+              }
+
+              if (dejavu_colisao == 0)
+              {
+                 vetor_colisoes[contador_vetor_colisoes] = contador_coluna;
+                 contador_vetor_colisoes++;
+              }
+              colisao_flag = 1;
+            }
+         }
+      }
+
+      if (colisao_flag == 1)
+      {
+         dejavu_colisao = 0;
+
+         for (contador_genes = 0; contador_genes < genes; contador_genes++) 
+         {
+            if (vetor_colisoes[contador_genes] == coluna) 
+            { 
+               dejavu_colisao = 1; 
+            }
+         }
+
+         if (dejavu_colisao == 0) 
+         {
+            vetor_colisoes[contador_vetor_colisoes] = coluna;
+            contador_vetor_colisoes++;
+         }    
+      }
+   }   
+
+   for (contador_genes = 0; contador_genes < genes; contador_genes++) 
+    {
+      if (vetor_colisoes[contador_genes] < 0)
+      { 
+         numero_de_rainhas_posicionadas_corretamente++; 
+      }
+   }            
+
+   free(vetor_colisoes);
+   return numero_de_rainhas_posicionadas_corretamente;
 }
 
-void gerar_populacao_inical (int limite_populacional) {
-        for (int individuo = 0; individuo < limite_populacional; individuo++) {
-                individuos[individuo].aptidao = 0;
-                for (int gene = 0; gene < GENES; gene++) {
-                        individuos[individuo].genes[gene] = (rand() % GENES);
-                }
-        }
+void gerar_populacao_inical () {
+   for (contador_populacao = 0; contador_populacao < POPULACAO; contador_populacao++) {
+      individuos[contador_populacao].aptidao = 0;
+
+      for (contador_genes = 0; contador_genes < genes; contador_genes++) {
+         individuos[contador_populacao].genes[contador_genes] = (rand() % genes);
+      }
+   }
 }
 
-void reproducao(int pai) {
-        
-        for (int c0 = 0; c0 < (GENES/2); c0++) {
-                individuos[populacao_atual].genes[c0] = individuos[pai].genes[c0];
-        }
-        
-        for (int c1 = 0; c1 < elite_da_populacao; c1++) {
+void reproducao(int pai) {      
+   for (contador_populacao = 0; contador_populacao < elite_da_populacao; contador_populacao++) {
+      for (contador_genes = 0; contador_genes < (genes/2); contador_genes++) {
+         individuos[populacao_atual].genes[contador_genes] = individuos[pai].genes[contador_genes];
+      }      
 
-                for (int c2 = GENES/2; c2 < GENES; c2++) {
-                        if (c1 != pai) {
-                                individuos[populacao_atual].genes[c2] = individuos[c1].genes[c2];
-                        }
-                }
-                
-                //mutação
-                
-                for (int c0 = (rand()%GENES); c0 < (GENES-1); c0++)
-                {
-                        individuos[populacao_atual].genes[(rand() % GENES)] = (rand() % GENES);
-                }
-                
-                individuos[populacao_atual].aptidao = 0;
-                populacao_atual++;
-        }
+      for (contador_genes = genes/2; contador_genes < genes; contador_genes++) {
+         if (contador_populacao != pai) {
+            individuos[populacao_atual].genes[contador_genes] = individuos[contador_populacao].genes[contador_genes];
+         }
+      }      
+      individuos[populacao_atual].genes[(rand()%genes)] = (rand()%genes);      
+      individuos[populacao_atual].aptidao = 0;
+      populacao_atual++;
+   }   
 }
 
-void gerar_nova_populacao () {
-        populacao_atual = elite_da_populacao;
-        for (int c0 = 0; c0 < elite_da_populacao; c0++) {
-                individuos[c0].aptidao = elite[c0].aptidao;
-                for (int c1 = 0; c1 < GENES; c1++) {
-                        individuos[c0].genes[c1] = elite[c0].genes[c1];
-                }
-        }        
-        for (int individuo = 0; individuo < elite_da_populacao; individuo++) {
-                reproducao(individuo);
-        }
+void mutacao_global() {
+    for (contador_genes = (rand()%genes); contador_genes < (genes-1); contador_genes++)
+    {
+       individuos[(rand() % POPULACAO)].genes[rand()%genes] = (rand()%genes);
+       contador_mutacao++;      
+    }
+}
+
+void mutacao_local_elite() {
+    for (contador_genes = 0; contador_genes < (rand()%genes)/10; contador_genes++)
+    {
+       individuos[((rand() % elite_da_populacao))].genes[rand()%genes] = (rand()%genes);
+       contador_mutacao++;      
+    }
+}
+
+void mutacao_local_plebe() {
+   for (contador_genes = (rand()%genes); contador_genes < (genes-1); contador_genes++)
+   {
+      for (contador_populacao = 0; contador_populacao < (rand()%elite_da_populacao); contador_populacao++)
+      {
+         individuos[(rand() % (POPULACAO-elite_da_populacao))+elite_da_populacao].genes[rand()%genes] = (rand()%genes);
+         contador_mutacao++;      
+      }
+   }
+}
+
+void gerar_nova_populacao () {   
+   contador_mutacao = 0;
+   populacao_atual = elite_da_populacao;
+
+   for (int c0 = 0; c0 < elite_da_populacao; c0++) {
+      individuos[c0].aptidao = elite[c0].aptidao;
+      for (int c1 = 0; c1 < genes; c1++) {
+         individuos[c0].genes[c1] = elite[c0].genes[c1];
+      }
+   }   
+
+   for (int individuo = 0; individuo < elite_da_populacao; individuo++) {
+      reproducao(individuo);
+   }
 }
 
 void preservar_elite() {
-        for (int c0 = 0; c0 < elite_da_populacao; c0++) {
-                for (int c1 = 0; c1 < GENES; c1++) {
-                        elite[c0].genes[c1] = individuos[c0].genes[c1];
-                }
-                elite[c0].aptidao = individuos[c0].aptidao;
-        }
+   for (int c0 = 0; c0 < elite_da_populacao; c0++) {
+      for (int c1 = 0; c1 < genes; c1++) {
+         elite[c0].genes[c1] = individuos[c0].genes[c1];
+      }
+      elite[c0].aptidao = individuos[c0].aptidao;
+   }
 }
 
-int calcula_aptidao(int candidato) {
-        return total_de_rainhas_corretamente_posicionadas(candidato);
+int selecao_natural(int especime) {
+   return total_de_rainhas_corretamente_posicionadas(especime);
 }
 
 void ordenar_populacao_por_aptidao (int limite_populacional) {
-        Cromossomo sujeito;
-        int aptidao = 0;
-        int houve_troca = 0;
-        
-        for (int c0 = 0; c0 < limite_populacional-1; c0++) {
-                if (individuos[c0].aptidao < individuos[c0+1].aptidao) {
-                        for (int c1 = 0; c1 < GENES; c1++) {
-                                sujeito.genes[c1] = individuos[c0+1].genes[c1];
-                                individuos[c0+1].genes[c1] = individuos[c0].genes[c1];
-                                individuos[c0].genes[c1] = sujeito.genes[c1];
-                        }
-                        sujeito.aptidao = individuos[c0+1].aptidao;
-                        individuos[c0+1].aptidao = individuos[c0].aptidao;
-                        individuos[c0].aptidao = sujeito.aptidao;
-                        
-                        houve_troca = 1;                        
-                }
-        }
-        
-        if (houve_troca == 1) {
-                ordenar_populacao_por_aptidao(POPULACAO);
-        }
+   Cromossomo sujeito;
+   sujeito.genes = malloc(genes*sizeof(int));   
+
+   int aptidao = 0;
+   int houve_troca = 0;   
+
+   for (int c0 = 0; c0 < limite_populacional-1; c0++) {
+      if (individuos[c0].aptidao < individuos[c0+1].aptidao) {
+         for (int c1 = 0; c1 < genes; c1++) {
+            sujeito.genes[c1] = individuos[c0+1].genes[c1];
+            individuos[c0+1].genes[c1] = individuos[c0].genes[c1];
+            individuos[c0].genes[c1] = sujeito.genes[c1];
+         }
+         sujeito.aptidao = individuos[c0+1].aptidao;
+         individuos[c0+1].aptidao = individuos[c0].aptidao;
+         individuos[c0].aptidao = sujeito.aptidao;
+         houve_troca = 1;    
+      }
+   }
+
+   if (houve_troca == 1) {
+      ordenar_populacao_por_aptidao(POPULACAO);
+   }
+   free(sujeito.genes);
 }
 
 void imprimir_melhor_resultado_na_tela() {
-        printf("\n\tgeração: %d; melhor resultado: %d [ ",geracao,individuos[0].aptidao);
-
-        for (int c0 = 0; c0 < GENES; c0++) {                               
-                printf("%c%d ",97+c0,elite[0].genes[c0]+1);
-        }
-        printf("]");
+   printf("\n%d:%d",geracao,individuos[0].aptidao);
 }
 
-void imprimir_individuo_na_tela(int vencedor) {
-        printf("\n\tgeração: %d; melhor resultado: %d [ ",geracao,individuos[vencedor].aptidao);
-        
-        for (int c0 = 0; c0 < GENES; c0++) {
-                printf("%c%d ",97+c0,individuos[vencedor].genes[c0]+1);
-        }
+void imprimir_individuo_na_tela(int individuo) {
+   printf("\n geração: %d; solução: %d [ ",geracao,individuos[individuo].aptidao);
 
-        printf("]\n\n");        
+   for (int c0 = 0; c0 < genes; c0++) {
+      printf("%d ",individuos[individuo].genes[c0]+1);   
+   }
+   printf("]\n");
 }
 
+void imprimir_individuo_em_arquivo(int genes,int especime, float time) {
+   FILE *arquivo = NULL;
+   char *file = malloc(32*sizeof(char));
+   memset(file,'\0',32);
+   sprintf(file,"%d_queens.txt",genes);
+   arquivo = fopen(file,"w+");   
+
+   if (arquivo == NULL) {
+      printf("\n\nNão foi possível criar o arquivo %d_queens.txt\n\n",genes);
+      exit(1);
+   }
+
+   fprintf(arquivo,"\\*\n\tAlgoritmo N-queens escrito por Geraldo Rabelo <geraldo.rabelo@gmail.com> em Setembro de 2017.\n*\\\n\n");   
+   fprintf(arquivo,"número de raínhas: %d\nsolução: [",genes);
+
+   for (contador_populacao = 0; contador_populacao < genes-1; contador_populacao++) {
+      fprintf(arquivo,"%d,",individuos[especime].genes[contador_populacao]+1);   
+   }       
+
+   fprintf(arquivo,"%d]\nresolvido em %d gerações (%f segundos)",individuos[especime].genes[contador_populacao+1]+1,geracao, time);
+   fclose(arquivo);
+   free(file);
+}
+
+void dimensionar_populacao()
+{
+   for (contador = 0;contador < POPULACAO;contador++) {
+      free(individuos[contador].genes);
+      individuos[contador].genes = malloc(genes*sizeof(int));
+   }
+
+   for (contador = 0;contador < elite_da_populacao;contador++) {
+      free(elite[contador].genes);
+      elite[contador].genes = malloc(genes*sizeof(int));
+   }
+}
 
 int main(int argc, char **argv) {  
+   double start_t, end_t, total_t;
+   start_t = clock();      
 
-        double start_t, end_t, total_t;
-        start_t = clock();        
-        
-        
-//        FILE *cpuinfo = fopen("/proc/cpuinfo", "rb");
-//        char *arg = 0;
-//        size_t size = 0;  
+   for (contador = 0;contador < POPULACAO;contador++) {
+      individuos[contador].genes = malloc(genes*sizeof(int));
+   }   
 
-        
-        geracao = 0;
-        
-        printf("\n");
-        
-        gerar_populacao_inical(POPULACAO);  
-        elite_da_populacao = round((-1+sqrt(1+4*POPULACAO)/2));
-        printf("\tPreservados %d de %d individuos -Elitismo-",elite_da_populacao,POPULACAO);
-        elite = malloc(elite_da_populacao*sizeof(Cromossomo));
-        
-        while (geracao < GERACOES) {
-                for (int individuo = 0; individuo < POPULACAO; individuo++) {
-                        individuos[individuo].aptidao = calcula_aptidao(individuo);
-                        if (individuos[individuo].aptidao == 8) {
-                                imprimir_individuo_na_tela(individuo);
-                                end_t = clock();                                
-                                total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;
-                                printf("\tTempo total: %f segundos\n", total_t  );
-                                printf("\n");
+   geracao = 0;   
+   gerar_populacao_inical(POPULACAO);  
+   elite_da_populacao = round((-1+sqrt(1+4*POPULACAO)/2));
+   elite = malloc(elite_da_populacao*sizeof(Cromossomo));
 
-                                return(0);
-                        }
-                }
-                ordenar_populacao_por_aptidao(POPULACAO);
-                preservar_elite();
-                imprimir_melhor_resultado_na_tela();
-                gerar_nova_populacao();
-                geracao++;
-        }
-                        
-        end_t = clock();        
-        total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;
-        printf("Tempo total: %f segundos\n", total_t  );
-        printf("\n");
+   for (contador = 0;contador < elite_da_populacao;contador++) {
+      elite[contador].genes = malloc(genes*sizeof(int));
+   }   
 
+   while (1) {
+      for (int individuo = 0; individuo < POPULACAO; individuo++) {
+         individuos[individuo].aptidao = total_de_rainhas_corretamente_posicionadas(individuo);
+         sleep(0.5);
+         sleep(0.5);
 
-//        while(getdelim(&arg, &size, 0, cpuinfo) != -1)
-//        {
-//                puts(arg);
-//        }
-//        free(arg);
-//        fclose(cpuinfo);
-        
-        return(0);
+         if (individuos[individuo].aptidao == genes) {
+            imprimir_individuo_na_tela(individuo);
+            end_t = clock();       
+            total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;
+            imprimir_individuo_em_arquivo(genes,individuo,total_t);
+            printf("\tTempo total: %f segundos\n", total_t);
+            start_t = clock();
+            genes++;
+            dimensionar_populacao();
+            gerar_populacao_inical(POPULACAO);
+            geracao = 0;
+            sleep(0.5);
+         }
+      }
+
+      ordenar_populacao_por_aptidao(POPULACAO);
+      preservar_elite();
+      imprimir_melhor_resultado_na_tela();
+      gerar_nova_populacao();
+      mutacao_local_elite();
+      mutacao_local_plebe();    
+      geracao++;
+   }
+   return(0);
 }
