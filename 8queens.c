@@ -285,7 +285,7 @@ void ordenar_populacao_por_aptidao (int limite_populacional) {
 void imprimir_melhor_resultado_na_tela() {
    //executar a função de ordenação
 //   printf("\n%d:%d",geracao,individuos[0].aptidao);
-        printf("\n\tgeração: %d; melhor resultado: %d [ ",geracao,individuos[0].aptidao);
+        printf("\n\tgeração: %d; raínhas: %d de %d [ ",geracao,individuos[0].aptidao,genes);
 
         for (contador_genes = 0; contador_genes < genes; contador_genes++) {                               
                 printf("%d ",elite[0].genes[contador_genes]+1);
