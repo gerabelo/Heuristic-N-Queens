@@ -58,11 +58,29 @@ Cada individuo do grupo sobrevivente tem seu cromossomo dividido em duas partes.
   
    
 ## A  mutação  :hear_no_evil:  
-Alterações aleatorias ocorrerão em alguns dos genes da nova geração.
+Alterações aleatorias ocorrerão em alguns dos genes da nova geração durante a reprodução.
 ```
-        for (int contador_populacao = (rand()%GENES); contador_populacao < (GENES-1); contador_populacao++)
-        {
-                individuos[populacao_atual].genes[(rand() % GENES)] = (rand() % GENES);
+        individuos[populacao_atual].genes[(rand()%genes)] = (rand()%genes);
+```        
+e após a reprodução em proporções diferentes entre a Elite e a "Plebe".
+```
+        void mutacao_local_elite() {
+           for (int contador_genes = 0; contador_genes < TAXA_MUTACAO_ELITE*(rand()%genes); contador_genes++)
+           {
+              individuos[((rand() % elite_da_populacao))].genes[rand()%genes] = (rand()%genes);
+              contador_mutacao++;      
+           }
+        }
+        
+        void mutacao_local_plebe() {
+           for (int contador_genes = (rand()%genes); contador_genes < (genes-1); contador_genes++)
+           {
+              for (int contador_populacao = 0; contador_populacao < (rand()%elite_da_populacao); contador_populacao++)
+              {
+                 individuos[(rand() % (POPULACAO-elite_da_populacao))+elite_da_populacao].genes[rand()%genes] = (rand()%genes);
+                 contador_mutacao++;      
+              }
+           }
         }
 ```
     
