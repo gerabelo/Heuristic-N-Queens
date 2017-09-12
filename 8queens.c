@@ -36,7 +36,7 @@
 #include <unistd.h> //sleep
 
 #define POPULACAO               800
-#define TAXA_MUTACAO_ELITE      0.5
+#define TAXA_MUTACAO_ELITE      0.25
 
 struct cromossomo {
    int *genes;
@@ -125,7 +125,7 @@ int total_de_rainhas_corretamente_posicionadas (int candidato) {
               {
                  if (vetor_colisoes[contador_genes] == contador_coluna)
                  {
-                    dejavu_colisao = 1; 
+                    dejavu_colisao = 1;
                  }
               }
 
@@ -284,23 +284,30 @@ void ordenar_populacao_por_aptidao (int limite_populacional) {
 
 void imprimir_melhor_resultado_na_tela() {
    //executar a função de ordenação
-//   printf("\n%d:%d",geracao,individuos[0].aptidao);
-        printf("\n\tgeração: %d; raínhas: %d de %d [ ",geracao,individuos[0].aptidao,genes);
+   printf("\n\t%d\t%d/%d",geracao,elite[0].aptidao,genes);
+
+/*
+        printf("\n\tgeração: %d; raínhas: %d de %d [ ",geracao,elite[0].aptidao,genes);
 
         for (contador_genes = 0; contador_genes < genes; contador_genes++) {                               
                 printf("%d ",elite[0].genes[contador_genes]+1);
         }
         printf("]");
-
+*/
 }
 
 void imprimir_individuo_na_tela(int especime) {
-   printf("\n geração: %d; solução: %d [ ",geracao,individuos[especime].aptidao);
+   printf("\n\t%d\t%d/%d [ ",geracao,individuos[especime].aptidao,genes);
 
    for (contador_populacao = 0; contador_populacao < genes; contador_populacao++) {
       printf("%d ",individuos[especime].genes[contador_populacao]+1);   
    }
    printf("]\n");
+}
+
+int imprimir_melhor_resultado_em_arquivo(FILE *arquivo) {
+   //executar a função de ordenação
+   return fprintf(arquivo,"%d;%d;\n",geracao,elite[0].aptidao);
 }
 
 void imprimir_individuo_em_arquivo(int genes,int especime, float time) {
@@ -327,7 +334,7 @@ void imprimir_individuo_em_arquivo(int genes,int especime, float time) {
    
 */
    for (contador_genes = 0; contador_genes < genes; contador_genes++) {
-      fprintf(arquivo,"%d;",individuos[especime].genes[contador_genes]+1);   
+      fprintf(arquivo,"%d;",individuos[especime].genes[contador_genes]+1);
    }       
 
 
@@ -364,10 +371,17 @@ int main(int argc, char **argv) {
       elite[contador].genes = malloc(genes*sizeof(int));
    }   
 
+   //FILE *log_file = NULL;
+   //char *file = malloc(32*sizeof(char));
+
    while (1) {
+      //memset(file,'\0',32);
+      //sprintf(file,"%d_queens_log.txt",genes);
+      //log_file = fopen(file,"w+");   
+   
       for (int especime = 0; especime < POPULACAO; especime++) {
          individuos[especime].aptidao = total_de_rainhas_corretamente_posicionadas(especime);
-         sleep(0.5);
+         //sleep(0.5);
 
          if (individuos[especime].aptidao == genes) {
             imprimir_individuo_na_tela(especime);
@@ -380,17 +394,20 @@ int main(int argc, char **argv) {
             dimensionar_populacao();
             gerar_populacao_inical(POPULACAO);
             geracao = 0;
-            //sleep(0.5);
+            sleep(5);
          }
       }
 
       ordenar_populacao_por_aptidao(POPULACAO);
       preservar_elite();
       imprimir_melhor_resultado_na_tela();
+      //imprimir_melhor_resultado_em_arquivo(log_file);
       gerar_nova_populacao();
       mutacao_local_elite();
       mutacao_local_plebe();    
       geracao++;
+      //free(log_file);
+      
    }
    return(0);
 }
