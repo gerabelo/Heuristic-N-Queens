@@ -1,5 +1,5 @@
-# Computação Evolutiva 
-Implementação em ANSI-C de um _Algoritmo Genético_ capaz de resolver o problema das N rainhas.  
+# N-Queens por Computação Evolutiva 
+Implementação em ANSI-C de um _Algoritmo Genético_ capaz de resolver o problema clássico das N rainhas.  
  
  
 :crown: :crown: :crown: :crown: :crown: :crown: :crown: :crown:  
