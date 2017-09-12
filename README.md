@@ -35,7 +35,27 @@ O alfabeto que compoem os genes vai de 0 à 7 e representa a linha ocupada pela 
     
 ## A reprodução  :couple:  
 Cada individuo do grupo sobrevivente tem seu cromossomo dividido em duas partes. Novos indivíduos sao criados preservando a primeira metade dos genes de um individuo pai enquanto a segunda é copiada de outro indivíduo mãe. Em seguida ocorre a mutação aleatória.
-   
+  
+```
+        void reproducao(int pai) {      
+           for (int contador_populacao = 0; contador_populacao < elite_da_populacao; contador_populacao++) {
+              for (int contador_genes = 0; contador_genes < (genes/2); contador_genes++) {
+                 individuos[populacao_atual].genes[contador_genes] = individuos[pai].genes[contador_genes];
+              }      
+        
+              for (int contador_genes = genes/2; contador_genes < genes; contador_genes++) {
+                 if (contador_populacao != pai) {
+                    individuos[populacao_atual].genes[contador_genes] = individuos[contador_populacao].genes[contador_genes];
+                 }
+              }
+        
+              individuos[populacao_atual].genes[(rand()%genes)] = (rand()%genes);
+              individuos[populacao_atual].aptidao = 0;
+              populacao_atual++;
+           }   
+        }
+```
+  
    
 ## A  mutação  :hear_no_evil:  
 Alterações aleatorias ocorrerão em alguns dos genes da nova geração.
