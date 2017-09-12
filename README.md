@@ -31,7 +31,7 @@ Cada individuo do grupo sobrevivente tem seu cromossomo dividido em duas partes.
 ## A  mutação  :hear_no_evil:  
 Alterações aleatorias ocorrerão em alguns dos genes da nova geração.
 ```
-        for (int c0 = (rand()%GENES); c0 < (GENES-1); c0++)
+        for (int contador_populacao = (rand()%GENES); contador_populacao < (GENES-1); contador_populacao++)
         {
                 individuos[populacao_atual].genes[(rand() % GENES)] = (rand() % GENES);
         }
@@ -40,4 +40,4 @@ Alterações aleatorias ocorrerão em alguns dos genes da nova geração.
 ## Conclusões  
 Algoritmos Genéticos oferecem soluções heurísticas que podem, ou não, convergir para o resultado desejado.
   
-![screenshot](https://c1.staticflickr.com/5/4383/37054716985_5f774f39de_o.png)
+![screenshot](https://c1.staticflickr.com/5/4332/36349900714_907c81669b_o.png)
