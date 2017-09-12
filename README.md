@@ -1,10 +1,10 @@
 # Computação Evolutiva 
-Implementação em ANSI-C de um _Algoritmo Genético_ capaz de resolver o problema das oito rainhas.  
+Implementação em ANSI-C de um _Algoritmo Genético_ capaz de resolver o problema das N rainhas.  
  
  
 :crown: :crown: :crown: :crown: :crown: :crown: :crown: :crown:  
-## 8 Queens  
-Este problema consiste, como próprio nome sugere, em posicionar oito rainhas em um tableiro de xadrez, sem que elas ameassem umas as outras.  
+## N Queens  
+Este problema consiste, como próprio nome sugere, em posicionar N rainhas em um tableiro de xadrez, sem que elas ameassem umas as outras.  
   
     
 ## Como o algoritmo funciona?  
@@ -20,6 +20,15 @@ As estruturas:
 A cada geração um pequeno grupo formado pelos mais aptos é preservado -elitismo-. os demais são substituidos por combinações entre individuos do grupo sobrevivente.  
 ```
         elite_da_populacao = round((-1+sqrt(1+4*POPULACAO)/2));
+        [...]
+        void preservar_elite() {
+           for (int contador_populacao = 0; contador_populacao < elite_da_populacao; contador_populacao++) {
+              for (int contador_genes = 0; contador_genes < genes; contador_genes++) {
+                 elite[contador_populacao].genes[contador_genes] = individuos[contador_populacao].genes[contador_genes];
+              }
+              elite[contador_populacao].aptidao = individuos[contador_populacao].aptidao;
+           }
+        }
 ```
 O alfabeto que compoem os genes vai de 0 à 7 e representa a linha ocupada pela rainha naquela coluna/gene.
   
