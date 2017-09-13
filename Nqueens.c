@@ -362,11 +362,13 @@ int gerar_css() {
 
    arquivo = fopen(file,"w+");
 
+//   fprintf(arquivo,"body { display: inline-block; margin: 0px auto; text-align: center;}");
    fprintf(arquivo,"body, div.progress { background-color: #ffc; }\n\n");
    fprintf(arquivo,"a.external:after { content: url(\"external.gif\"); }\n\n");
    fprintf(arquivo,"a:link, a:visited { color: #060; }\n\n");
    fprintf(arquivo,".colour, a:hover, dt, h1, h2, h3, h4, h5, h6, hr, th, div.progress { color: #030; }\n\n");
    fprintf(arquivo,"table.chessboard {\n");
+//   fprintf(arquivo,"  margin: 0px auto;\n");
    fprintf(arquivo,"  border-spacing: 0;\n");
    fprintf(arquivo,"  border: 0.1em outset #660;\n");
    fprintf(arquivo,"  background-color: #9c9;\n");
@@ -389,6 +391,8 @@ int gerar_css() {
    fprintf(arquivo,"  table.chessboard td { border: 1px solid #660; border-width: 0 1px 1px 0; }\n");
    fprintf(arquivo,"}\n\n");
    fprintf(arquivo,".border { border-color: #030; }\n");
+   fprintf(arquivo,"#content { width: %dpx; display: block; margin-top: 50px; margin-left: auto; margin-right: auto; }",25*genes);
+
 
    fclose(arquivo);
    free(file);
@@ -403,7 +407,7 @@ int exportar_html(int especime) {
    arquivo = fopen(file,"w+");   
 
 //   fprintf(arquivo,"<html>\n\t<head>\n\t<link rel=\"stylesheet\" href=\"Nqueens.css\" type=\"text/css\" />\n\t</head>\n\t<body>\n\t<table cellspacing=\"0\" class=\"chessboard\" style=\"width: 59.3em\">\n\t<caption>\"%d raínhas\"</caption>",genes);
-   fprintf(arquivo,"<html>\n\t<head>\n\t<link rel=\"stylesheet\" href=\"%d_queens.css\" type=\"text/css\" />\n\t</head>\n\t<body>\n\t<table cellspacing=\"0\" class=\"chessboard\">\n\t<caption>\"%d Raínhas\"</caption>",genes,genes);
+   fprintf(arquivo,"<html>\n\t<head>\n\t<link rel=\"stylesheet\" href=\"%d_queens.css\" type=\"text/css\" />\n\t</head>\n\t<body>\n\t<div id=\"content\"><table cellspacing=\"0\" class=\"chessboard\">\n\t<caption>\"N-Queens %dx%d\"</caption>",genes,genes,genes);
    
    for (int row = 0; row < genes; row++) {
       fprintf(arquivo,"\n\t<tr>\n");
@@ -441,7 +445,7 @@ int exportar_html(int especime) {
       }
       fprintf(arquivo,"\t</tr>");
    }
-   fprintf(arquivo,"\n\t</table>\n\t</body>\n</html>");
+   fprintf(arquivo,"\n\t</table></div>\n<!-- <p><a href=\"mailto:geraldo.rabelo@gmail.com?Subject=NQueens\" target=\"_top\"><b>by gerabelo</b></a> --></p>\t</body>\n</html>");
    free(file);
    fclose(arquivo);
    gerar_css();
