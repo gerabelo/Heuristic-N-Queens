@@ -399,7 +399,7 @@ int gerar_css() {
    return 1;
 }
 
-int exportar_html(int especime) {
+int exportar_html(int especime, float time) {
    FILE *arquivo = NULL;
    char *file = malloc(32*sizeof(char));
    memset(file,'\0',32);
@@ -445,7 +445,7 @@ int exportar_html(int especime) {
       }
       fprintf(arquivo,"\t</tr>");
    }
-   fprintf(arquivo,"\n\t</table></div>\n<!-- <p><a href=\"mailto:geraldo.rabelo@gmail.com?Subject=NQueens\" target=\"_top\"><b>by gerabelo</b></a> --></p>\t</body>\n</html>");
+   fprintf(arquivo,"\n\t</table></div>\n<!-- <p><a href=\"mailto:geraldo.rabelo@gmail.com?Subject=NQueens\" target=\"_top\"><b>by gerabelo</b></a></p><p>Solução encontrada em %f segundos.</p>-->\t</body>\n</html>",time);
    free(file);
    fclose(arquivo);
    gerar_css();
