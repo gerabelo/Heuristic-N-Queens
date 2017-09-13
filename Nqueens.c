@@ -430,9 +430,9 @@ int exportar_html(int especime) {
          } else {
                  if(individuos[especime].genes[row] == column) {
                     if (column % 2 == 0) {    
-                       fprintf(arquivo,"\t\t<td class=\"light\">Q</td>\n");
+                       fprintf(arquivo,"\t\t<td class=\"light\"><img src=\"queen.png\"></td>\n");
                     } else {
-                       fprintf(arquivo,"\t\t<td>Q</td>\n");                    
+                       fprintf(arquivo,"\t\t<td><img src=\"queen.png\"></td>\n");
                     }
                  } else {
                     if (column % 2 == 0) {             
