@@ -1,0 +1,45 @@
+body, div.progress { background-color: #ffc; }
+
+a.external:after { content: url("external.gif"); }
+
+a:link, a:visited { color: #060; }
+
+.colour, a:hover, dt, h1, h2, h3, h4, h5, h6, hr, th, div.progress { color: #030; }
+
+table.chessboard {
+  border-spacing: 0;
+  border: 0.1em outset #660;
+  background-color: #9c9;
+  text-align: center;
+  font-size: 0.8em;
+  font-weight: bold;
+}
+
+table.chessboard tr { height: 1.2em; }
+
+table.chessboard td { width: 1.2em; padding: 0; border: 0; }
+
+table.chessboard td.light { background-color: #ffc; }
+
+div.chessboard table.chessboard { font-size: 1em; font-weight: normal; }
+
+div.chessboard table.big { border-width: 0.2em; }
+
+div.chessboard table.big tr { height: 3em; }
+
+div.chessboard table.big td { width: 3em; }
+
+div.progress { float: right; margin: 10px 0 1px 10px; border: 2px solid; padding: 10px; text-align: center; }
+
+div.progress p { font-size: 1.1em; margin-top: 0; margin-bottom: 10px; }
+
+div.progress p.progress { font-size: 2em; }
+
+
+/* Alternate Media */
+@media print {
+  table.chessboard td { border: 1px solid #660; border-width: 0 1px 1px 0; }
+}
+
+.border { border-color: #030; }
+#content { width: 3775px; display: block; margin-top: 50px; margin-left: auto; margin-right: auto; }
