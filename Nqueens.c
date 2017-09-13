@@ -445,7 +445,7 @@ int exportar_html(int especime, float time) {
       }
       fprintf(arquivo,"\t</tr>");
    }
-   fprintf(arquivo,"\n\t</table></div>\n<!-- <p><a href=\"mailto:geraldo.rabelo@gmail.com?Subject=NQueens\" target=\"_top\"><b>by gerabelo</b></a></p><p>Solução encontrada em %f segundos.</p>-->\t</body>\n</html>",time);
+   fprintf(arquivo,"\n\t</table></div>\n<!-- <p><a href=\"mailto:geraldo.rabelo@gmail.com?Subject=NQueens\" target=\"_top\"><b>by gerabelo</b></a></p><p>Solução encontrada em %f segundos na %d geração de %d individuos.</p>-->\t</body>\n</html>",time,geracao,POPULACAO);
    free(file);
    fclose(arquivo);
    gerar_css();
