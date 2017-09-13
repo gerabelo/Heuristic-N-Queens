@@ -489,9 +489,9 @@ int main(int argc, char **argv) {
             total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;
             imprimir_individuo_em_arquivo(genes,especime,total_t);
             printf("\tTempo total: %f segundos\n", total_t);
-            start_t = clock();
-            exportar_html(especime);
+            exportar_html(especime,total_t);
             sleep(5);
+            start_t = clock();
             genes++;
             dimensionar_populacao();
             gerar_populacao_inical(POPULACAO);
