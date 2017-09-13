@@ -407,7 +407,7 @@ int exportar_html(int especime, float time) {
    arquivo = fopen(file,"w+");   
 
 //   fprintf(arquivo,"<html>\n\t<head>\n\t<link rel=\"stylesheet\" href=\"Nqueens.css\" type=\"text/css\" />\n\t</head>\n\t<body>\n\t<table cellspacing=\"0\" class=\"chessboard\" style=\"width: 59.3em\">\n\t<caption>\"%d raínhas\"</caption>",genes);
-   fprintf(arquivo,"<html>\n\t<head>\n\t<link rel=\"stylesheet\" href=\"%d_queens.css\" type=\"text/css\" />\n\t</head>\n\t<body>\n\t<div id=\"content\"><table cellspacing=\"0\" class=\"chessboard\">\n\t<caption>\"N-Queens %dx%d\"</caption>",genes,genes,genes);
+   fprintf(arquivo,"<html>\n\t<head>\n\t<link rel=\"stylesheet\" href=\"%d_queens.css\" type=\"text/css\" />\n\t</head>\n\t<body>\n\t<div id=\"content\"><table cellspacing=\"0\" class=\"chessboard\">\n\t<!--<caption>\"N-Queens %dx%d\"</caption>-->",genes,genes,genes);
    
    for (int row = 0; row < genes; row++) {
       fprintf(arquivo,"\n\t<tr>\n");
