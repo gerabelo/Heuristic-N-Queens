@@ -354,6 +354,102 @@ void dimensionar_populacao()
    }
 }
 
+int gerar_css() {
+   FILE *arquivo = NULL;
+   char *file = malloc(32*sizeof(char));
+   memset(file,'\0',32);
+   sprintf(file,"%d_queens.css",genes);
+
+   arquivo = fopen(file,"w+");
+
+   fprintf(arquivo,"body, div.progress { background-color: #ffc; }\n\n");
+   fprintf(arquivo,"a.external:after { content: url(\"external.gif\"); }\n\n");
+   fprintf(arquivo,"a:link, a:visited { color: #060; }\n\n");
+   fprintf(arquivo,".colour, a:hover, dt, h1, h2, h3, h4, h5, h6, hr, th, div.progress { color: #030; }\n\n");
+   fprintf(arquivo,"table.chessboard {\n");
+   fprintf(arquivo,"  border-spacing: 0;\n");
+   fprintf(arquivo,"  border: 0.1em outset #660;\n");
+   fprintf(arquivo,"  background-color: #9c9;\n");
+   fprintf(arquivo,"  text-align: center;\n");
+   fprintf(arquivo,"  font-size: 0.8em;\n");
+   fprintf(arquivo,"  font-weight: bold;\n");
+   fprintf(arquivo,"}\n\n");
+   fprintf(arquivo,"table.chessboard tr { height: 1.2em; }\n\n");
+   fprintf(arquivo,"table.chessboard td { width: 1.2em; padding: 0; border: 0; }\n\n");
+   fprintf(arquivo,"table.chessboard td.light { background-color: #ffc; }\n\n");
+   fprintf(arquivo,"div.chessboard table.chessboard { font-size: 1em; font-weight: normal; }\n\n");
+   fprintf(arquivo,"div.chessboard table.big { border-width: 0.2em; }\n\n");
+   fprintf(arquivo,"div.chessboard table.big tr { height: 3em; }\n\n");
+   fprintf(arquivo,"div.chessboard table.big td { width: 3em; }\n\n");
+   fprintf(arquivo,"div.progress { float: right; margin: 10px 0 1px 10px; border: 2px solid; padding: 10px; text-align: center; }\n\n");
+   fprintf(arquivo,"div.progress p { font-size: 1.1em; margin-top: 0; margin-bottom: 10px; }\n\n");
+   fprintf(arquivo,"div.progress p.progress { font-size: 2em; }\n\n\n");
+   fprintf(arquivo,"/* Alternate Media */\n");
+   fprintf(arquivo,"@media print {\n");
+   fprintf(arquivo,"  table.chessboard td { border: 1px solid #660; border-width: 0 1px 1px 0; }\n");
+   fprintf(arquivo,"}\n\n");
+   fprintf(arquivo,".border { border-color: #030; }\n");
+
+   fclose(arquivo);
+   free(file);
+   return 1;
+}
+
+int exportar_html(int especime) {
+   FILE *arquivo = NULL;
+   char *file = malloc(32*sizeof(char));
+   memset(file,'\0',32);
+   sprintf(file,"%d_queens.html",genes);
+   arquivo = fopen(file,"w+");   
+
+//   fprintf(arquivo,"<html>\n\t<head>\n\t<link rel=\"stylesheet\" href=\"Nqueens.css\" type=\"text/css\" />\n\t</head>\n\t<body>\n\t<table cellspacing=\"0\" class=\"chessboard\" style=\"width: 59.3em\">\n\t<caption>\"%d raínhas\"</caption>",genes);
+   fprintf(arquivo,"<html>\n\t<head>\n\t<link rel=\"stylesheet\" href=\"%d_queens.css\" type=\"text/css\" />\n\t</head>\n\t<body>\n\t<table cellspacing=\"0\" class=\"chessboard\">\n\t<caption>\"%d Raínhas\"</caption>",genes,genes);
+   
+   for (int row = 0; row < genes; row++) {
+      fprintf(arquivo,"\n\t<tr>\n");
+      for (int column = 0; column < genes; column++) {
+         if (row % 2 == 0) {
+                 if(individuos[especime].genes[row] == column) {
+                    if (column % 2 == 0) {    
+                       fprintf(arquivo,"\t\t<td>Q</td>\n");
+                    } else {
+                       fprintf(arquivo,"\t\t<td class=\"light\">Q</td>\n");
+                    
+                    }
+                 } else {
+                    if (column % 2 == 0) {             
+                      fprintf(arquivo,"\t\t<td>&nbsp;</td>\n");
+                    } else {
+                      fprintf(arquivo,"\t\t<td class=\"light\">&nbsp;</td>\n");
+                    }
+                 }         
+         } else {
+                 if(individuos[especime].genes[row] == column) {
+                    if (column % 2 == 0) {    
+                       fprintf(arquivo,"\t\t<td class=\"light\">Q</td>\n");
+                    } else {
+                       fprintf(arquivo,"\t\t<td>Q</td>\n");                    
+                    }
+                 } else {
+                    if (column % 2 == 0) {             
+                      fprintf(arquivo,"\t\t<td class=\"light\">&nbsp;</td>\n");
+                    } else {
+                      fprintf(arquivo,"\t\t<td>&nbsp;</td>\n");
+                    }
+                 }  
+         }      
+      }
+      fprintf(arquivo,"\t</tr>");
+   }
+   fprintf(arquivo,"\n\t</table>\n\t</body>\n</html>");
+   free(file);
+   fclose(arquivo);
+   gerar_css();
+   
+   return 1;
+}
+
+
 int main(int argc, char **argv) {  
    double start_t, end_t, total_t;
    start_t = clock();      
@@ -390,11 +486,12 @@ int main(int argc, char **argv) {
             imprimir_individuo_em_arquivo(genes,especime,total_t);
             printf("\tTempo total: %f segundos\n", total_t);
             start_t = clock();
+            exportar_html(especime);
+            sleep(5);
             genes++;
             dimensionar_populacao();
             gerar_populacao_inical(POPULACAO);
             geracao = 0;
-            sleep(5);
          }
       }
 
