@@ -42,4 +42,4 @@ div.progress p.progress { font-size: 2em; }
 }
 
 .border { border-color: #030; }
-#content { width: 1200px; display: block; margin-left: auto; margin-right: auto; }
+#content { width: 1200px; display: block; margin-top: 50px; margin-left: auto; margin-right: auto; }
