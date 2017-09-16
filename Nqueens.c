@@ -25,12 +25,14 @@
       populacao*(elite-2)! = elite*(elite-1)*(elite-2)!      
       populacao = elite*(elite-1)
       elite^2 - elite - populacao = 0
-      elite = (-1+sqrt(1+4*populacao))/2      
+      elite = (-1+sqrt(1+4*populacao))/2
+      
+      ideias futuras: incrementar mutação da elite de 0,25 para 0,5 quando as soluções atingirem 95%.
 */
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
+#include <string.h> //memset
 #include <math.h>
 #include <time.h>
 #include <unistd.h> //sleep
@@ -38,7 +40,8 @@
 #define POPULACAO               800
 #define TAXA_MUTACAO_ELITE      0.25
 
-struct cromossomo {
+struct cromossomo
+{
    int *genes;
    int aptidao;
 } CROMOSSOMO;
@@ -50,7 +53,7 @@ Cromossomo *elite;
 int populacao_atual                             = 0;
 int geracao                                     = 0;
 int elite_da_populacao                          = 0;
-int genes                                       = 8;
+int genes                                       = 1000;
 int linha                                       = 0;
 int numero_de_rainhas_posicionadas_corretamente = 0;
 int dejavu_colisao                              = 0;
@@ -59,6 +62,8 @@ int coluna                                      = 0;
 int individuo                                   = 0;
 int aptidao                                     = 0;
 int houve_troca                                 = 0;   
+int max_rainhas                                 = 0;
+float progresso                                 = 0.0;
 
 int contador_vetor_colisoes                     = 0;
 int contador_mutacao                            = 0;
@@ -68,7 +73,8 @@ int contador_posicao                            = 0;
 int contador_populacao                          = 0; 
 int contador_genes                              = 0;
 
-int total_de_rainhas_corretamente_posicionadas (int candidato) {       
+int total_de_rainhas_corretamente_posicionadas (int candidato)
+{
    /*
       Esta função trata das Restrições a cerca do posicionamento das Queens
       verifica linha e diagonais
@@ -80,22 +86,34 @@ int total_de_rainhas_corretamente_posicionadas (int candidato) {
    dejavu_colisao                               = 0;
    colisao_flag                                 = 0;
 
-   for (contador = genes-1; contador >= 0; contador--) {
+   for (contador = genes-1; contador >= 0; contador--)
+   {
       vetor_colisoes[contador] = 1-(contador+2);
    }   
 
-   for (coluna = 0; coluna < genes; coluna++) {      
-      linha = individuos[candidato].genes[coluna];
-      colisao_flag = 0;  
-      for (contador_coluna = coluna+1; contador_coluna < genes; contador_coluna++) {    
-        for (contador_posicao = 0; contador_posicao < 3; contador_posicao++) {// Três é o número máximo de linhas bloqueadas em cada coluna adjacente a uma já ocupada
-           if (contador_posicao == 0 && individuos[candidato].genes[contador_coluna] == linha) {     
+   for (coluna = 0; coluna < genes; coluna++)
+   {
+   
+      linha             = individuos[candidato].genes[coluna];
+      colisao_flag      = 0;
+      
+      for (contador_coluna = coluna+1; contador_coluna < genes; contador_coluna++)
+      {
+      
+        for (contador_posicao = 0; contador_posicao < 3; contador_posicao++)
+        {// Três é o número máximo de linhas bloqueadas em cada coluna adjacente a uma já ocupada
+           if (contador_posicao == 0 && individuos[candidato].genes[contador_coluna] == linha)
+           {
+           
               dejavu_colisao = 0;
-              for (contador_genes = 0; contador_genes < genes; contador_genes++) {
+              
+              for (contador_genes = 0; contador_genes < genes; contador_genes++)
+              {
                  if (vetor_colisoes[contador_genes] == contador_coluna) { dejavu_colisao = 1; }
               }
 
-              if (dejavu_colisao == 0) {
+              if (dejavu_colisao == 0)
+              {
                  vetor_colisoes[contador_vetor_colisoes] = contador_coluna;
                  contador_vetor_colisoes++;
               }
@@ -171,7 +189,8 @@ int total_de_rainhas_corretamente_posicionadas (int candidato) {
    return numero_de_rainhas_posicionadas_corretamente;
 }
 
-void gerar_populacao_inical () {
+void gerar_populacao_inical ()
+{
    for (contador_populacao = 0; contador_populacao < POPULACAO; contador_populacao++) {
       individuos[contador_populacao].aptidao = 0;
 
@@ -181,14 +200,19 @@ void gerar_populacao_inical () {
    }
 }
 
-void reproducao(int pai) {      
-   for (int contador_populacao = 0; contador_populacao < elite_da_populacao; contador_populacao++) {
-      for (int contador_genes = 0; contador_genes < (genes/2); contador_genes++) {
+void reproducao(int pai)
+{
+   for (int contador_populacao = 0; contador_populacao < elite_da_populacao; contador_populacao++)
+   {
+      for (int contador_genes = 0; contador_genes < (genes/2); contador_genes++)
+      {
          individuos[populacao_atual].genes[contador_genes] = individuos[pai].genes[contador_genes];
       }      
 
-      for (int contador_genes = genes/2; contador_genes < genes; contador_genes++) {
-         if (contador_populacao != pai) {
+      for (int contador_genes = genes/2; contador_genes < genes; contador_genes++)
+      {
+         if (contador_populacao != pai)
+         {
             individuos[populacao_atual].genes[contador_genes] = individuos[contador_populacao].genes[contador_genes];
          }
       }
@@ -199,7 +223,8 @@ void reproducao(int pai) {
    }   
 }
 
-void mutacao_global() {
+void mutacao_global()
+{
     for (int contador_genes = (rand()%genes); contador_genes < (genes-1); contador_genes++)
     {
        individuos[(rand() % POPULACAO)].genes[rand()%genes] = (rand()%genes);
@@ -208,10 +233,19 @@ void mutacao_global() {
 }
 
 void mutacao_local_elite() {
-    for (int contador_genes = 0; contador_genes < TAXA_MUTACAO_ELITE*(rand()%genes); contador_genes++)
-    {
-       individuos[((rand() % elite_da_populacao))].genes[rand()%genes] = (rand()%genes);
-       contador_mutacao++;      
+    if (progresso > 0.7) {
+       for (int contador_genes = 0; contador_genes < TAXA_MUTACAO_ELITE*elite_da_populacao; contador_genes++)
+       {
+          individuos[((rand() % elite_da_populacao))].genes[rand()%genes] = (rand()%genes);
+          contador_mutacao++;      
+       }
+    } else {
+       for (int contador_genes = 0; contador_genes < 0.5*TAXA_MUTACAO_ELITE*elite_da_populacao; contador_genes++)
+       {
+          individuos[((rand() % elite_da_populacao))].genes[rand()%genes] = (rand()%genes);
+          contador_mutacao++;      
+       }
+    
     }
 }
 
@@ -284,20 +318,11 @@ void ordenar_populacao_por_aptidao (int limite_populacional) {
 
 void imprimir_melhor_resultado_na_tela() {
    //executar a função de ordenação
-   printf("\n\t%d\t%d/%d",geracao,elite[0].aptidao,genes);
-
-/*
-        printf("\n\tgeração: %d; raínhas: %d de %d [ ",geracao,elite[0].aptidao,genes);
-
-        for (contador_genes = 0; contador_genes < genes; contador_genes++) {                               
-                printf("%d ",elite[0].genes[contador_genes]+1);
-        }
-        printf("]");
-*/
+   printf("\n\t%d\t%d;%d\t%f",geracao,elite[0].aptidao,genes,progresso);
 }
 
 void imprimir_individuo_na_tela(int especime) {
-   printf("\n\t%d\t%d/%d [ ",geracao,individuos[especime].aptidao,genes);
+   printf("\n\t%d\t%d;%d [ ",geracao,individuos[especime].aptidao,genes);
 
    for (contador_populacao = 0; contador_populacao < genes; contador_populacao++) {
       printf("%d ",individuos[especime].genes[contador_populacao]+1);   
@@ -305,18 +330,23 @@ void imprimir_individuo_na_tela(int especime) {
    printf("]\n");
 }
 
-int imprimir_melhor_resultado_em_arquivo(FILE *arquivo) {
+int imprimir_melhor_resultado_em_arquivo(FILE *arquivo, int individuo) {
    //executar a função de ordenação
-   return fprintf(arquivo,"%d;%d;\n",geracao,elite[0].aptidao);
+   if (individuo != -1) {
+        fprintf(arquivo,"%d\n",individuos[individuo].aptidao);           
+   } else {
+        fprintf(arquivo,"%d\n",elite[0].aptidao);   
+   }
+   
+   return 1;
 }
 
 void imprimir_individuo_em_arquivo(int genes,int especime, float time) {
-   FILE *arquivo = NULL;
+   FILE *arquivo;
    char *file = malloc(32*sizeof(char));
    memset(file,'\0',32);
    sprintf(file,"%d_queens.txt",genes);
-   arquivo = fopen(file,"w+");   
-   free(file);
+   arquivo = fopen(file,"w+");      
 
    if (arquivo == NULL) {
       printf("\n\nNão foi possível criar o arquivo %d_queens.txt\n\n",genes);
@@ -335,9 +365,8 @@ void imprimir_individuo_em_arquivo(int genes,int especime, float time) {
 */
    for (contador_genes = 0; contador_genes < genes; contador_genes++) {
       fprintf(arquivo,"%d;",individuos[especime].genes[contador_genes]+1);
-   }       
-
-
+   }
+   free(file);
    fclose(arquivo);
 }
 
@@ -453,10 +482,12 @@ int exportar_html(int especime, float time) {
    return 1;
 }
 
-
 int main(int argc, char **argv) {  
+   FILE *log_file = NULL;
+   char *file = malloc(32*sizeof(char));
    double start_t, end_t, total_t;
-   start_t = clock();      
+   
+   start_t = clock();
 
    for (contador = 0;contador < POPULACAO;contador++) {
       individuos[contador].genes = malloc(genes*sizeof(int));
@@ -471,16 +502,22 @@ int main(int argc, char **argv) {
       elite[contador].genes = malloc(genes*sizeof(int));
    }   
 
-   //FILE *log_file = NULL;
-   //char *file = malloc(32*sizeof(char));
-
+   memset(file,'\0',32);
+   sprintf(file,"%d_queens_debug.txt",genes);
+   log_file = fopen(file,"w+");
+      
    while (1) {
-      //memset(file,'\0',32);
-      //sprintf(file,"%d_queens_log.txt",genes);
-      //log_file = fopen(file,"w+");   
+      
+      max_rainhas       = 0;
+      progresso         = 0.0;  
    
       for (int especime = 0; especime < POPULACAO; especime++) {
+         progresso = 0;
          individuos[especime].aptidao = total_de_rainhas_corretamente_posicionadas(especime);
+         if (individuos[especime].aptidao > max_rainhas) {
+                max_rainhas = individuos[especime].aptidao;
+         }
+         progresso = max_rainhas/(float)genes;
          //sleep(0.5);
 
          if (individuos[especime].aptidao == genes) {
@@ -488,11 +525,18 @@ int main(int argc, char **argv) {
             end_t = clock();       
             total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;
             imprimir_individuo_em_arquivo(genes,especime,total_t);
+            //imprimir_melhor_resultado_em_arquivo(log_file,especime);
             printf("\tTempo total: %f segundos\n", total_t);
             exportar_html(especime,total_t);
-            sleep(5);
+            sleep(5);            
+            
             start_t = clock();
             genes++;
+            fclose(log_file);
+            memset(file,'\0',32);
+            sprintf(file,"%d_queens_debug.txt",genes);
+            log_file = fopen(file,"w+");
+            
             dimensionar_populacao();
             gerar_populacao_inical(POPULACAO);
             geracao = 0;
@@ -502,14 +546,15 @@ int main(int argc, char **argv) {
       ordenar_populacao_por_aptidao(POPULACAO);
       preservar_elite();
       imprimir_melhor_resultado_na_tela();
-      //imprimir_melhor_resultado_em_arquivo(log_file);
+      //imprimir_melhor_resultado_em_arquivo(log_file,-1);
+      sleep(0.5);
       gerar_nova_populacao();
       mutacao_local_elite();
       mutacao_local_plebe();    
       geracao++;
-      //free(log_file);
       
    }
+   if (log_file != NULL) { fclose(log_file); }   
+
    return(0);
 }
-
