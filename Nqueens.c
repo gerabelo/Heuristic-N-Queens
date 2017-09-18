@@ -37,7 +37,7 @@
 #include <time.h>
 #include <unistd.h> //sleep
 
-#define POPULACAO               800
+#define POPULACAO               2000//800 é suficiente para maioria dos casos < 1000 raínhas.
 #define TAXA_MUTACAO_ELITE      0.25
 
 struct cromossomo
@@ -53,7 +53,7 @@ Cromossomo *elite;
 int populacao_atual                             = 0;
 int geracao                                     = 0;
 int elite_da_populacao                          = 0;
-int genes                                       = 1000;
+int genes                                       = 1000; //numero de raínhas
 int linha                                       = 0;
 int numero_de_rainhas_posicionadas_corretamente = 0;
 int dejavu_colisao                              = 0;
